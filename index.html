@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Trazo" />
+    <meta name="theme-color" content="#16171b" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+    <title>Trazo</title>
+  </head>
+  <body>
+    <canvas id="view"></canvas>
+
+    <aside id="tools" class="panel">
+      <div class="group seg" data-group="tool">
+        <button data-tool="draw" class="on" title="Dibujar (B)">✎<span>Dibujar</span></button>
+        <button data-tool="erase" title="Borrar trazos (E)">⌫<span>Borrar</span></button>
+      </div>
+
+      <div class="group seg" data-group="brush">
+        <button data-brush="tube" class="on" title="Tubo redondo">◯<span>Tubo</span></button>
+        <button data-brush="ribbon" title="Cinta plana, orientada al plano">▭<span>Cinta</span></button>
+      </div>
+
+      <div class="group swatches" id="swatches"></div>
+
+      <label class="slider">
+        <span>Grosor <output id="sizeOut"></output></span>
+        <input id="size" type="range" min="1" max="40" step="1" value="6" />
+      </label>
+      <label class="slider">
+        <span>Suavizado</span>
+        <input id="smooth" type="range" min="0" max="0.9" step="0.05" value="0.45" />
+      </label>
+    </aside>
+
+    <div id="actions" class="panel row">
+      <button id="undo" title="Deshacer (⌘Z · toque con 2 dedos)">↶</button>
+      <button id="redo" title="Rehacer (⇧⌘Z · toque con 3 dedos)">↷</button>
+      <span class="sep"></span>
+      <button data-view="front" title="Vista frontal">F</button>
+      <button data-view="side" title="Vista lateral">L</button>
+      <button data-view="top" title="Vista superior">S</button>
+      <button data-view="home" title="Vista inicial">⌂</button>
+      <span class="sep"></span>
+      <button id="menuBtn" title="Archivo">⋯</button>
+      <div id="menu" class="panel menu" hidden>
+        <button data-export="usdz">Ver en AR / USDZ</button>
+        <button data-export="glb">Exportar GLB</button>
+        <button data-export="obj">Exportar OBJ</button>
+        <button data-export="json">Guardar boceto (.trazo.json)</button>
+        <button id="openBtn">Abrir boceto…</button>
+        <input id="openFile" type="file" accept=".json,application/json" hidden />
+        <hr />
+        <label class="check"><input id="fingerDraw" type="checkbox" /> Dibujar con el dedo</label>
+        <label class="check"><input id="showGrid" type="checkbox" checked /> Mostrar suelo</label>
+        <hr />
+        <button id="clearBtn" class="danger">Borrar todo</button>
+      </div>
+    </div>
+
+    <div id="planes" class="panel row">
+      <div class="seg" data-group="plane">
+        <button data-plane="view" class="on" title="Plano de frente a la cámara (1)">Vista</button>
+        <button data-plane="xy" title="Plano frontal XY (2)">Frente</button>
+        <button data-plane="yz" title="Plano lateral YZ (3)">Lado</button>
+        <button data-plane="xz" title="Plano del suelo XZ (4)">Suelo</button>
+        <button data-plane="surface" title="Dibujar sobre los trazos existentes (5)">Superficie</button>
+      </div>
+      <label class="slider inline">
+        <span>Profundidad</span>
+        <input id="depth" type="range" min="-1.5" max="1.5" step="0.01" value="0" />
+      </label>
+      <button id="lockBtn" class="toggle" title="Fijar el plano donde está (no seguir a la cámara)">Fijar</button>
+      <button id="anchorBtn" class="toggle on" title="Empezar el trazo sobre otro trazo mueve el plano hasta ahí">Anclar</button>
+      <button id="mirrorBtn" class="toggle" title="Simetría en X (M)">Espejo</button>
+    </div>
+
+    <div id="hint">
+      <b>Pencil</b> dibuja · <b>1 dedo</b> gira · <b>2 dedos</b> mueve y acerca ·
+      toque 2 dedos = deshacer
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
